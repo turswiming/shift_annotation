@@ -2,5 +2,9 @@
 .venv
 /annotationed_images
 /train
+/val
+
 /*.zip
 /anno/
+
+/anno_val/
