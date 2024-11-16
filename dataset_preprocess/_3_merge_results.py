@@ -40,4 +40,4 @@ for shifted_path in os.listdir(path_to_anno_dir):
     else:
         continue
 with open(path_to_new_fixations, 'w') as f:
-    json.dump(data, f)
+    json.dump(data, f,indent=5)
