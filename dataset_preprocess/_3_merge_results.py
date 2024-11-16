@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description="shift annotations.")
 parser.add_argument('--dataset_type', type=str, default="train", help='train or val')
 args = parser.parse_args()
 
-mode = "train"
+mode = args.dataset_type
 if mode == "train":
     path_to_anno_dir = "anno/"
     path_to_fixations = "fixations_train2014.json"
