@@ -114,7 +114,7 @@ if __name__ == "__main__":
     with open(path, 'r') as f:
         data = json.load(f)
 
-    for annotation in tqdm.tqdm(data):
+    for annotation in tqdm.tqdm(data,position=args.thread_id,desc="thread {}".format(args.thread_id)):
         shifted_fixations = mean_shift_fixations(annotation["fixations"])
         # draw_circle(
         #     path_t0_image_dir+image_dict[annotation["image_id"]]["file_name"], 

@@ -11,4 +11,4 @@ done
 
 wait
 
-python3 dataset_preprocess/_3_merge_annotation.py --dataset_type "$dataset_type"
+python3 dataset_preprocess/_3_merge_results.py --dataset_type "$dataset_type"
