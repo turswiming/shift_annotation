@@ -10,10 +10,6 @@ from sklearn.neighbors import KNeighborsClassifier
 import argparse
 from PIL import Image, ImageDraw
 
-path_to_json = "fixations_train2014.json"
-path_t0_image_dir = "train/"
-annotationed_image_dir = "annotationed_images/"
-path_to_anno_dir = "anno/"
 def visualize_image_with_annotations(image, annotation):
     fixations = annotation["fixations"]
     path_to_image = path_t0_image_dir + image["file_name"]
@@ -95,12 +91,30 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="shift annotations.")
     parser.add_argument('--all_thread', type=int, default=1, help='the number of all thread runingg parallel')
     parser.add_argument('--thread_id', type=int, default=0, help='the id of thread')
+    parser.add_argument('--dataset_type', type=str, default="train", help='train or val')
     args = parser.parse_args()
-    path = path_to_anno_dir+"fixations_train2014_anno_{}.json".format(args.thread_id)
+    mode = args.dataset_type
+    if mode == "train":
+        path_to_json = "fixations_train2014.json"
+        path_t0_image_dir = "train/"
+        annotationed_image_dir = "annotationed_images/"
+        path_to_anno_dir = "anno/"
+        path_to_unshifted_template = "fixations_train2014_anno_{}.json"
+        path_to_shifted_template = "fixations_train2014_shift_{}.json"
+    elif mode == "val":
+        path_to_json = "fixations_val2014.json"
+        path_t0_image_dir = "val/"
+        annotationed_image_dir = "annotationed_images/"
+        path_to_anno_dir = "anno_val/"
+        path_to_unshifted_template = "fixations_val2014_anno_{}.json"
+        path_to_shifted_template = "fixations_val2014_shift_{}.json"
+
+
+    path = path_to_anno_dir+path_to_unshifted_template.format(args.thread_id)
     with open(path, 'r') as f:
         data = json.load(f)
 
-    for annotation in tqdm.tqdm(data):
+    for annotation in tqdm.tqdm(data,position=args.thread_id,desc="thread {}".format(args.thread_id)):
         shifted_fixations = mean_shift_fixations(annotation["fixations"])
         # draw_circle(
         #     path_t0_image_dir+image_dict[annotation["image_id"]]["file_name"], 
@@ -115,6 +129,6 @@ if __name__ == "__main__":
         annotation["fixations"] = shifted_fixations
 
 
-    with open(path_to_anno_dir+"fixations_train2014_shift_{}.json".format(args.thread_id), 'w') as f:
+    with open(path_to_anno_dir+path_to_shifted_template.format(args.thread_id), 'w') as f:
         json.dump(data, f)
                 # visualize_image_with_annotations(image_dict[key], annotation)
